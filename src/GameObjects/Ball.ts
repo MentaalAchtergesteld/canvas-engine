@@ -1,26 +1,38 @@
-import { Paddle, PlaySide } from "./paddle";
+import { Signal } from "../Engine/Event";
+import { GameObject } from "../Engine/GameObject";
+import { Paddle } from "./Paddle";
 
 function getRandomPitchVariation(): number {
   return 0.95 + Math.random() * 0.1;
 }
 
-export class Ball {
-  color: string = "#FFFFFF";
-  hitSound: HTMLAudioElement = new Audio("./assets/hit_sfx.mp3");
+export enum PlaySide {
+  Left,
+  Right,
+}
+
+export class Ball implements GameObject {
+  onScoreSignal: Signal<PlaySide> = new Signal<PlaySide>();
+
+  private color: string = "#FFFFFF";
+  private hitSound: HTMLAudioElement = new Audio("./assets/hit_sfx.mp3");
 
   x: number;
   y: number;
-  xVel: number;
-  yVel: number;
+  private xVel: number;
+  private yVel: number;
 
-  radius: number;
+  private radius: number;
 
-  maxSpeed: number;
+  private maxSpeed: number;
 
-  upperConstraint: number;
-  lowerConstraint: number;
-  leftConstraint: number;
-  rightConstraint: number;
+  private upperConstraint: number;
+  private lowerConstraint: number;
+  private leftConstraint: number;
+  private rightConstraint: number;
+
+  private leftPaddle: Paddle;
+  private rightPaddle: Paddle;
 
   constructor(
     x: number,
@@ -30,7 +42,8 @@ export class Ball {
     upperConstraint: number,
     lowerConstraint: number,
     leftConstraint: number,
-    rightConstraint: number
+    rightConstraint: number,
+    paddles: [Paddle, Paddle]
   ) {
     this.x = x;
     this.y = y;
@@ -45,6 +58,9 @@ export class Ball {
     this.lowerConstraint = lowerConstraint;
     this.leftConstraint = leftConstraint;
     this.rightConstraint = rightConstraint;
+
+    this.leftPaddle = paddles[0];
+    this.rightPaddle = paddles[1];
   }
 
   randomizeVelocity() {
@@ -60,12 +76,8 @@ export class Ball {
     this.yVel = directions[randomIndex].y;
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.color;
-    // ctx.beginPath();
-    // ctx.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, Math.PI * 2);
-    // ctx.fill();
-    // ctx.closePath();
     ctx.fillRect(
       this.x - this.radius,
       this.y - this.radius,
@@ -74,13 +86,25 @@ export class Ball {
     );
   }
 
-  playHitSound() {
+  update(delta: number) {
+    this.x += this.xVel * this.maxSpeed * delta;
+    this.y += this.yVel * this.maxSpeed * delta;
+
+    this.reflectVerticalBoundaries();
+    this.reflectPaddle(this.leftPaddle);
+    this.reflectPaddle(this.rightPaddle);
+
+    let scorer = this.checkIfScored();
+    if (scorer != null) this.onScore(scorer);
+  }
+
+  private playHitSound() {
     this.hitSound.playbackRate = getRandomPitchVariation();
     this.hitSound.currentTime = 0;
     this.hitSound.play();
   }
 
-  reflectVerticalBoundaries() {
+  private reflectVerticalBoundaries() {
     if (this.y - this.radius <= this.upperConstraint) {
       this.playHitSound();
       let overlap = this.y - this.radius - this.upperConstraint;
@@ -95,7 +119,7 @@ export class Ball {
     }
   }
 
-  reflectHorizontalBoundaries() {
+  private reflectHorizontalBoundaries() {
     if (this.x - this.radius <= this.leftConstraint) {
       this.playHitSound();
       let overlap = this.x - this.radius - this.leftConstraint;
@@ -110,12 +134,13 @@ export class Ball {
     }
   }
 
-  reflectPaddle(paddle: Paddle) {
-    let paddleHalfWidth = paddle.width / 2;
-    let paddleHalfHeight = paddle.height / 2;
+  private reflectPaddle(paddle: Paddle) {
+    let [paddleX, paddleY, paddleWidth, paddleHeight] = paddle.getBoundingBox();
+    let paddleHalfWidth = paddleWidth / 2;
+    let paddleHalfHeight = paddleHeight / 2;
 
-    let paddleCenterX = paddle.x + paddleHalfWidth;
-    let paddleCenterY = paddle.y + paddleHalfHeight;
+    let paddleCenterX = paddleX + paddleHalfWidth;
+    let paddleCenterY = paddleY + paddleHalfHeight;
 
     let positionDifferenceX = this.x - paddleCenterX;
     let positionDifferenceY = this.y - paddleCenterY;
@@ -137,15 +162,12 @@ export class Ball {
     }
   }
 
-  update(delta: number, leftPaddle: Paddle, rightPaddle: Paddle) {
-    this.reflectVerticalBoundaries();
-    this.reflectPaddle(leftPaddle);
-    this.reflectPaddle(rightPaddle);
-    this.x += this.xVel * this.maxSpeed * delta;
-    this.y += this.yVel * this.maxSpeed * delta;
+  private onScore(scorer: PlaySide) {
+    this.reset();
+    this.onScoreSignal.trigger(scorer);
   }
 
-  checkWinner(): PlaySide | null {
+  private checkIfScored(): PlaySide | null {
     if (this.x - this.radius <= this.leftConstraint) {
       return PlaySide.Right;
     }
@@ -156,9 +178,10 @@ export class Ball {
     return null;
   }
 
-  reset(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-    this.randomizeVelocity();
+  reset() {
+    this.x = (this.leftConstraint + this.rightConstraint) / 2;
+    this.y = (this.upperConstraint + this.lowerConstraint) / 2;
+    this.xVel = 0;
+    this.yVel = 0;
   }
 }
