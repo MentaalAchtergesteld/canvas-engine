@@ -1,5 +1,8 @@
+import { RenderContext, UpdateContext } from "./Engine";
 import { GameObject } from "./GameObject";
 import { InputManager } from "./InputManager";
+import { SceneManager } from "./SceneManager";
+import { SoundManager } from "./SoundManager";
 
 export class Scene {
   private gameObjects: GameObject[] = [];
@@ -13,16 +16,18 @@ export class Scene {
   enter() {}
   exit() {}
 
-  update(deltaTime: number, inputManager: InputManager): void {
-    this.gameObjects.forEach((object) =>
-      object.update(deltaTime, inputManager)
-    );
+  update(context: UpdateContext): void {
+    this.gameObjects.forEach((object) => object.update(context));
   }
 
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
+  renderBackground(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    this.gameObjects.forEach((object) => object.render(canvas, ctx));
+  }
+
+  render(context: RenderContext): void {
+    this.renderBackground(context.canvas, context.ctx);
+    this.gameObjects.forEach((object) => object.render(context));
   }
 
   addGameObject(gameObject: GameObject): void {

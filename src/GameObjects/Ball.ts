@@ -1,3 +1,4 @@
+import { RenderContext, UpdateContext } from "../Engine/Engine";
 import { Signal } from "../Engine/Event";
 import { GameObject } from "../Engine/GameObject";
 import { Paddle } from "./Paddle";
@@ -76,7 +77,8 @@ export class Ball implements GameObject {
     this.yVel = directions[randomIndex].y;
   }
 
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+  render(context: RenderContext) {
+    let ctx = context.ctx;
     ctx.fillStyle = this.color;
     ctx.fillRect(
       this.x - this.radius,
@@ -86,9 +88,9 @@ export class Ball implements GameObject {
     );
   }
 
-  update(delta: number) {
-    this.x += this.xVel * this.maxSpeed * delta;
-    this.y += this.yVel * this.maxSpeed * delta;
+  update(context: UpdateContext) {
+    this.x += this.xVel * this.maxSpeed * context.deltaTime;
+    this.y += this.yVel * this.maxSpeed * context.deltaTime;
 
     this.reflectVerticalBoundaries();
     this.reflectPaddle(this.leftPaddle);

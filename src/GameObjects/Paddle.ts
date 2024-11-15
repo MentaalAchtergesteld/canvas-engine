@@ -2,6 +2,7 @@ import { Ball, PlaySide } from "./Ball";
 import { Signal } from "../Engine/Event";
 import { GameObject } from "../Engine/GameObject";
 import { InputManager } from "../Engine/InputManager";
+import { RenderContext, UpdateContext } from "../Engine/Engine";
 
 interface PaddleController {
   getMoveDirection(currentY: number, inputManager: InputManager): number;
@@ -82,15 +83,19 @@ export class Paddle implements GameObject {
     signal.subscribe(this.onScore.bind(this));
   }
 
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+  render(context: RenderContext) {
+    let ctx = context.ctx;
     ctx.fillStyle = this.color;
 
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
-  update(deltaTime: number, inputManager: InputManager) {
+  update(context: UpdateContext) {
     if (!this.enabled) return;
     if (this.controller == null) return;
+
+    let inputManager = context.inputManager;
+    let deltaTime = context.deltaTime;
 
     let moveDirection = this.controller.getMoveDirection(this.y, inputManager);
 

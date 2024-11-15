@@ -1,3 +1,4 @@
+import { RenderContext, UpdateContext } from "../Engine/Engine";
 import { Signal } from "../Engine/Event";
 import { GameObject } from "../Engine/GameObject";
 import { InputManager } from "../Engine/InputManager";
@@ -14,11 +15,11 @@ export class Timer implements GameObject {
     this.time = time;
   }
 
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {}
+  render(context: RenderContext): void {}
 
-  update(deltaTime: number, inputManager: InputManager): void {
+  update(context: UpdateContext): void {
     if (this.isRunning) {
-      this.currentTime -= deltaTime;
+      this.currentTime -= context.deltaTime;
       if (this.currentTime <= 0) {
         this.onTimeout();
       }

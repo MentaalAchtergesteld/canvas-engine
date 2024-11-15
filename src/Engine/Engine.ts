@@ -1,14 +1,26 @@
-import { Err, Ok, Result } from "./Result";
+import { Err, Ok, Result } from "./ReturnTypes";
 import { InputManager } from "./InputManager";
 import { Scene } from "./Scene";
 import { SceneManager } from "./SceneManager";
+import { SoundManager } from "./SoundManager";
 
-class AudioManager {}
+export type UpdateContext = {
+  inputManager: InputManager;
+  soundManager: SoundManager;
+  sceneManager: SceneManager;
+  deltaTime: number;
+};
+
+export type RenderContext = {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+};
 
 export class Engine {
   private lastTime: number = 0;
 
   private inputManager: InputManager;
+  private soundManager: SoundManager;
   private sceneManager: SceneManager;
 
   private isRunning: boolean = false;
@@ -23,6 +35,7 @@ export class Engine {
     [this.canvas, this.ctx] = canvasResult.value;
 
     this.inputManager = new InputManager(this.canvas);
+    this.soundManager = new SoundManager();
     this.sceneManager = new SceneManager();
   }
 
@@ -70,8 +83,15 @@ export class Engine {
 
     this.lastTime = now;
 
-    this.sceneManager.getCurrentScene()?.update(deltaTime, this.inputManager);
-    this.sceneManager.getCurrentScene()?.render(this.canvas, this.ctx);
+    this.sceneManager.getCurrentScene()?.update({
+      inputManager: this.inputManager,
+      soundManager: this.soundManager,
+      sceneManager: this.sceneManager,
+      deltaTime,
+    });
+    this.sceneManager
+      .getCurrentScene()
+      ?.render({ canvas: this.canvas, ctx: this.ctx });
 
     if (!this.isRunning) return;
     requestAnimationFrame(this.gameLoop.bind(this));

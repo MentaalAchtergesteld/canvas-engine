@@ -1,3 +1,4 @@
+import { RenderContext, UpdateContext } from "../Engine/Engine";
 import { GameObject } from "../Engine/GameObject";
 import { InputManager } from "../Engine/InputManager";
 
@@ -31,7 +32,8 @@ export class DividingLine implements GameObject {
 
     this.verticalOffset = remainingSpace / 2;
   }
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
+  render(context: RenderContext): void {
+    let ctx = context.ctx;
     ctx.fillStyle = this.color;
     for (let i = 0; i < this.dotAmount; i++) {
       if (i % 2) continue;
@@ -45,5 +47,5 @@ export class DividingLine implements GameObject {
     }
   }
 
-  update(deltaTime: number, inputManager: InputManager): void {}
+  update(context: UpdateContext): void {}
 }

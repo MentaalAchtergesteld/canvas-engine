@@ -2,6 +2,7 @@ import { Ball, PlaySide } from "./Ball";
 import { Signal } from "../Engine/Event";
 import { GameObject } from "../Engine/GameObject";
 import { InputManager } from "../Engine/InputManager";
+import { RenderContext, UpdateContext } from "../Engine/Engine";
 
 export class ScoreKeeper implements GameObject {
   private color: string = "#FFF";
@@ -36,7 +37,8 @@ export class ScoreKeeper implements GameObject {
     signal.subscribe(this.updateScore.bind(this));
   }
 
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
+  render(context: RenderContext): void {
+    let ctx = context.ctx;
     ctx.font = `${this.fontSize}px ${this.font}`;
     ctx.fillStyle = this.color;
     ctx.textAlign = "center";
@@ -54,7 +56,7 @@ export class ScoreKeeper implements GameObject {
     );
   }
 
-  update(deltaTime: number, inputManager: InputManager): void {}
+  update(context: UpdateContext): void {}
 
   private updateScore(scorer: PlaySide) {
     switch (scorer) {

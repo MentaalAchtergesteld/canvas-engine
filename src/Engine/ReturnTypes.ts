@@ -9,3 +9,13 @@ export function Ok<T>(value: T): Result<T, never> {
 export function Err<E>(error: E): Result<never, E> {
   return { success: false, error };
 }
+
+export type Option<T> = { isSome: true; value: T } | { isSome: false };
+
+export function Some<T>(value: T): Option<T> {
+  return { isSome: true, value };
+}
+
+export function None(): Option<never> {
+  return { isSome: false };
+}

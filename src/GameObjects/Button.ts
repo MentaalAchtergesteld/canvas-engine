@@ -1,3 +1,4 @@
+import { RenderContext, UpdateContext } from "../Engine/Engine";
 import { Signal } from "../Engine/Event";
 import { GameObject } from "../Engine/GameObject";
 import { InputManager, MouseButton } from "../Engine/InputManager";
@@ -47,7 +48,8 @@ export class Button implements GameObject {
     this.font = font;
   }
 
-  render(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
+  render(context: RenderContext): void {
+    let ctx = context.ctx;
     ctx.fillStyle = this.backgroundcolor;
 
     ctx.fillRect(...this.getButtonPosition(), ...this.getButtonSize());
@@ -105,7 +107,8 @@ export class Button implements GameObject {
     this.onReleaseSignal.trigger(null);
   }
 
-  update(deltaTime: number, inputManager: InputManager): void {
+  update(context: UpdateContext): void {
+    let inputManager = context.inputManager;
     let [mouseX, mouseY] = inputManager.getMousePosition();
 
     if (
