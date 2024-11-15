@@ -27,6 +27,7 @@ function getStartButton(canvasWidth: number, canvasHeight: number): Button {
 }
 
 export function MainScreenScene(
+  engine: Engine,
   canvasWidth: number,
   canvasHeight: number
 ): Scene {
@@ -37,7 +38,7 @@ export function MainScreenScene(
   scene.addGameObject(startButton);
 
   startButton.onReleaseSignal.subscribe(() => {
-    Engine.getInstance().getSceneManager().switchScene("Game");
+    engine.getSceneManager().switchScene("Game");
   });
 
   return scene;

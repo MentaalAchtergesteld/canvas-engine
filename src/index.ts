@@ -19,18 +19,14 @@ const CANVAS_HEIGHT = 768;
 async function setupEngine() {
   await loadFonts();
 
-  const engine = Engine.getInstance(
-    "canvasParent",
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT
-  );
+  const engine = new Engine("canvasParent", CANVAS_WIDTH, CANVAS_HEIGHT);
 
   const sceneManager = engine.getSceneManager();
 
-  sceneManager.addScene("Game", GameScene(CANVAS_WIDTH, CANVAS_HEIGHT));
+  sceneManager.addScene("Game", GameScene(engine, CANVAS_WIDTH, CANVAS_HEIGHT));
   sceneManager.addScene(
     "MainScreen",
-    MainScreenScene(CANVAS_WIDTH, CANVAS_HEIGHT)
+    MainScreenScene(engine, CANVAS_WIDTH, CANVAS_HEIGHT)
   );
 
   engine.getSceneManager().switchScene("MainScreen");

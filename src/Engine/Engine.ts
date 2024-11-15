@@ -6,8 +6,6 @@ import { SceneManager } from "./SceneManager";
 class AudioManager {}
 
 export class Engine {
-  private static instance: Engine;
-
   private lastTime: number = 0;
 
   private inputManager: InputManager;
@@ -26,18 +24,6 @@ export class Engine {
 
     this.inputManager = new InputManager(this.canvas);
     this.sceneManager = new SceneManager();
-  }
-
-  static getInstance(
-    canvasId: string = "gameCanvas",
-    width: number = 128,
-    height: number = 128
-  ): Engine {
-    if (!Engine.instance) {
-      Engine.instance = new Engine(canvasId, width, height);
-    }
-
-    return Engine.instance;
   }
 
   getSceneManager(): SceneManager {

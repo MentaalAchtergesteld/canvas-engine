@@ -1,3 +1,4 @@
+import { Engine } from "../Engine/Engine";
 import { Scene } from "../Engine/Scene";
 import { Ball, PlaySide } from "../GameObjects/Ball";
 import { DividingLine } from "../GameObjects/DividingLine";
@@ -89,11 +90,7 @@ const SCORE_KEEPER_FONT_SIZE = 48;
 const SCORE_KEEPER_Y_OFFSET = 64;
 const SCORE_KEEPER_SPACE_BETWEEN = 256;
 
-function getScoreKeeper(
-  canvasWidth: number,
-  canvasHeight: number,
-  ball: Ball
-): ScoreKeeper {
+function getScoreKeeper(canvasWidth: number): ScoreKeeper {
   let x = canvasWidth / 2;
   let y = SCORE_KEEPER_Y_OFFSET;
 
@@ -125,12 +122,16 @@ function getDividingLine(
   return dividingLine;
 }
 
-export function GameScene(canvasWidth: number, canvasHeight: number): Scene {
+export function GameScene(
+  engine: Engine,
+  canvasWidth: number,
+  canvasHeight: number
+): Scene {
   const scene = new Scene("#000");
 
   const paddles = getPaddles(canvasWidth, canvasHeight);
   const ball = getBall(canvasWidth, canvasHeight, paddles);
-  const scoreKeeper = getScoreKeeper(canvasWidth, canvasHeight, ball);
+  const scoreKeeper = getScoreKeeper(canvasWidth);
   const dividingLine = getDividingLine(canvasWidth, canvasHeight);
 
   paddles[1].setController(new AIPaddleController(ball));
