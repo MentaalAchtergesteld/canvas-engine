@@ -19,9 +19,9 @@ export type RenderContext = {
 export class Engine {
   private lastTime: number = 0;
 
-  private inputManager: InputManager;
-  private soundManager: SoundManager;
-  private sceneManager: SceneManager;
+  public inputManager: InputManager;
+  public soundManager: SoundManager;
+  public sceneManager: SceneManager;
 
   private isRunning: boolean = false;
 
@@ -37,14 +37,6 @@ export class Engine {
     this.inputManager = new InputManager(this.canvas);
     this.soundManager = new SoundManager();
     this.sceneManager = new SceneManager();
-  }
-
-  getSceneManager(): SceneManager {
-    return this.sceneManager;
-  }
-
-  getInputManager(): InputManager {
-    return this.inputManager;
   }
 
   private initCanvas(

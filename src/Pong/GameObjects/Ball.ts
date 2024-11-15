@@ -1,11 +1,8 @@
 import { RenderContext, UpdateContext } from "../../Engine/Engine";
 import { Signal } from "../../Engine/Event";
 import { GameObject } from "../../Engine/GameObject";
+import { SoundManager } from "../../Engine/SoundManager";
 import { Paddle } from "./Paddle";
-
-function getRandomPitchVariation(): number {
-  return 0.95 + Math.random() * 0.1;
-}
 
 export enum PlaySide {
   Left,
@@ -16,7 +13,6 @@ export class Ball implements GameObject {
   onScoreSignal: Signal<PlaySide> = new Signal<PlaySide>();
 
   private color: string = "#FFFFFF";
-  private hitSound: HTMLAudioElement = new Audio("./assets/hit_sfx.mp3");
 
   x: number;
   y: number;
@@ -92,51 +88,60 @@ export class Ball implements GameObject {
     this.x += this.xVel * this.maxSpeed * context.deltaTime;
     this.y += this.yVel * this.maxSpeed * context.deltaTime;
 
-    this.reflectVerticalBoundaries();
-    this.reflectPaddle(this.leftPaddle);
-    this.reflectPaddle(this.rightPaddle);
+    let hitVerticalBoundaries = this.reflectVerticalBoundaries();
+    let hitLeftPaddle = this.reflectPaddle(this.leftPaddle);
+    let hitRightPaddle = this.reflectPaddle(this.rightPaddle);
+
+    if (hitVerticalBoundaries || hitLeftPaddle || hitRightPaddle) {
+      this.playHitSound(context.soundManager);
+    }
 
     let scorer = this.checkIfScored();
     if (scorer != null) this.onScore(scorer);
   }
 
-  private playHitSound() {
-    this.hitSound.playbackRate = getRandomPitchVariation();
-    this.hitSound.currentTime = 0;
-    this.hitSound.play();
+  private playHitSound(soundManager: SoundManager) {
+    soundManager.stopSound("ballHit");
+    soundManager.playSound("ballHit");
   }
 
-  private reflectVerticalBoundaries() {
+  private reflectVerticalBoundaries(): boolean {
+    let hasHit = false;
     if (this.y - this.radius <= this.upperConstraint) {
-      this.playHitSound();
       let overlap = this.y - this.radius - this.upperConstraint;
       this.y -= overlap;
       this.yVel *= -1;
+      hasHit = true;
     }
     if (this.y + this.radius >= this.lowerConstraint) {
-      this.playHitSound();
       let overlap = this.y + this.radius - this.lowerConstraint;
       this.y -= overlap;
       this.yVel *= -1;
+      hasHit = true;
     }
+
+    return hasHit;
   }
 
-  private reflectHorizontalBoundaries() {
+  private reflectHorizontalBoundaries(): boolean {
+    let hasHit = false;
     if (this.x - this.radius <= this.leftConstraint) {
-      this.playHitSound();
       let overlap = this.x - this.radius - this.leftConstraint;
       this.x -= overlap;
       this.xVel *= -1;
+      hasHit = true;
     }
     if (this.x + this.radius >= this.rightConstraint) {
-      this.hitSound.play();
       let overlap = this.x + this.radius - this.rightConstraint;
       this.x -= overlap;
       this.xVel *= -1;
+      hasHit = true;
     }
+
+    return hasHit;
   }
 
-  private reflectPaddle(paddle: Paddle) {
+  private reflectPaddle(paddle: Paddle): boolean {
     let [paddleX, paddleY, paddleWidth, paddleHeight] = paddle.getBoundingBox();
     let paddleHalfWidth = paddleWidth / 2;
     let paddleHalfHeight = paddleHeight / 2;
@@ -153,7 +158,6 @@ export class Ball implements GameObject {
       paddleHalfHeight + this.radius - Math.abs(positionDifferenceY);
 
     if (overlapX > 0 && overlapY > 0) {
-      this.playHitSound();
       if (overlapX < overlapY) {
         this.x += Math.sign(positionDifferenceX) * overlapX;
         this.xVel *= -1;
@@ -161,7 +165,10 @@ export class Ball implements GameObject {
         this.y += Math.sign(positionDifferenceY) * overlapY;
         this.yVel *= -1;
       }
+      return true;
     }
+
+    return false;
   }
 
   private onScore(scorer: PlaySide) {

@@ -38,7 +38,7 @@ export function MainScreenScene(
   scene.addGameObject(startButton);
 
   startButton.onReleaseSignal.subscribe(() => {
-    engine.getSceneManager().switchScene("Game");
+    engine.sceneManager.switchScene("Game");
   });
 
   return scene;

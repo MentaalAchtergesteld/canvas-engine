@@ -21,14 +21,17 @@ export async function setupEngine() {
 
   const engine = new Engine("canvasParent", CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  const sceneManager = engine.getSceneManager();
+  const soundManager = engine.soundManager;
+  soundManager.addSound("ballHit", "./assets/hit_sfx.mp3");
+
+  const sceneManager = engine.sceneManager;
 
   sceneManager.addScene("Game", GameScene(engine, CANVAS_WIDTH, CANVAS_HEIGHT));
   sceneManager.addScene(
     "MainScreen",
     MainScreenScene(engine, CANVAS_WIDTH, CANVAS_HEIGHT)
   );
+  sceneManager.switchScene("MainScreen");
 
-  engine.getSceneManager().switchScene("MainScreen");
   engine.start();
 }
