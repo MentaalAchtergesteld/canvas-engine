@@ -1,7 +1,7 @@
 {
-  "name": "pong-typescript",
+  "name": "canvas-engine",
   "version": "1.0.0",
-  "description": "My TypeScript Project",
+  "description": "A simple game engine written for HTML canvas",
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch"
