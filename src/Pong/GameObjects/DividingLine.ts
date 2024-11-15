@@ -1,6 +1,6 @@
-import { RenderContext, UpdateContext } from "../Engine/Engine";
-import { GameObject } from "../Engine/GameObject";
-import { InputManager } from "../Engine/InputManager";
+import { RenderContext, UpdateContext } from "../../Engine/Engine";
+import { GameObject } from "../../Engine/GameObject";
+import { InputManager } from "../../Engine/InputManager";
 
 export class DividingLine implements GameObject {
   color: string = "#FFF";

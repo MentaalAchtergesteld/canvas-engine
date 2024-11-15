@@ -1,7 +1,6 @@
-import { RenderContext, UpdateContext } from "../Engine/Engine";
-import { Signal } from "../Engine/Event";
-import { GameObject } from "../Engine/GameObject";
-import { InputManager } from "../Engine/InputManager";
+import { RenderContext, UpdateContext } from "../../Engine/Engine";
+import { Signal } from "../../Engine/Event";
+import { GameObject } from "../../Engine/GameObject";
 
 export class Timer implements GameObject {
   onTimeoutSignal: Signal<null> = new Signal<null>();

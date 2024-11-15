@@ -1,6 +1,6 @@
-import { RenderContext, UpdateContext } from "../Engine/Engine";
-import { Signal } from "../Engine/Event";
-import { GameObject } from "../Engine/GameObject";
+import { RenderContext, UpdateContext } from "../../Engine/Engine";
+import { Signal } from "../../Engine/Event";
+import { GameObject } from "../../Engine/GameObject";
 import { Paddle } from "./Paddle";
 
 function getRandomPitchVariation(): number {

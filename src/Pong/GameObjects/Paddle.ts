@@ -1,8 +1,8 @@
 import { Ball, PlaySide } from "./Ball";
-import { Signal } from "../Engine/Event";
-import { GameObject } from "../Engine/GameObject";
-import { InputManager } from "../Engine/InputManager";
-import { RenderContext, UpdateContext } from "../Engine/Engine";
+import { Signal } from "../../Engine/Event";
+import { GameObject } from "../../Engine/GameObject";
+import { InputManager } from "../../Engine/InputManager";
+import { RenderContext, UpdateContext } from "../../Engine/Engine";
 
 interface PaddleController {
   getMoveDirection(currentY: number, inputManager: InputManager): number;

@@ -1,5 +1,5 @@
-import { Engine } from "../Engine/Engine";
-import { Scene } from "../Engine/Scene";
+import { Engine } from "../../Engine/Engine";
+import { Scene } from "../../Engine/Scene";
 import { Ball, PlaySide } from "../GameObjects/Ball";
 import { DividingLine } from "../GameObjects/DividingLine";
 import {

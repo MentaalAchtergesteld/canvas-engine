@@ -1,5 +1,5 @@
-import { Engine } from "../Engine/Engine";
-import { Scene } from "../Engine/Scene";
+import { Engine } from "../../Engine/Engine";
+import { Scene } from "../../Engine/Scene";
 import { Button } from "../GameObjects/Button";
 
 const START_BUTTON_WIDTH = 320;

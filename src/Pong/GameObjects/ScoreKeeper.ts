@@ -1,8 +1,7 @@
-import { Ball, PlaySide } from "./Ball";
-import { Signal } from "../Engine/Event";
-import { GameObject } from "../Engine/GameObject";
-import { InputManager } from "../Engine/InputManager";
-import { RenderContext, UpdateContext } from "../Engine/Engine";
+import { PlaySide } from "./Ball";
+import { Signal } from "../../Engine/Event";
+import { GameObject } from "../../Engine/GameObject";
+import { RenderContext, UpdateContext } from "../../Engine/Engine";
 
 export class ScoreKeeper implements GameObject {
   private color: string = "#FFF";

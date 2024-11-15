@@ -1,7 +1,7 @@
-import { RenderContext, UpdateContext } from "../Engine/Engine";
-import { Signal } from "../Engine/Event";
-import { GameObject } from "../Engine/GameObject";
-import { InputManager, MouseButton } from "../Engine/InputManager";
+import { RenderContext, UpdateContext } from "../../Engine/Engine";
+import { Signal } from "../../Engine/Event";
+import { GameObject } from "../../Engine/GameObject";
+import { InputManager, MouseButton } from "../../Engine/InputManager";
 
 export class Button implements GameObject {
   onClickSignal: Signal<null> = new Signal<null>();
